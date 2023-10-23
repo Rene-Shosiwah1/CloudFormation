@@ -1,0 +1,63 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: "EC2 instance automation for our development environment"
+Metadata: {}
+
+Parameters: 
+  VpcCIDRBlock:
+    Type: String
+    Default: '10.0.0.0/16'
+Mappings: {}
+
+Conditions: {}
+
+Resources: 
+  MyVpc:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VpcCIDRBlock
+      Tags: 
+        - Key: Name 
+          Value: MyDemoVpc
+  MyVpcSub1:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1a"
+      VpcId: !Ref MyVpc
+      CidrBlock: '10.0.1.0/24'
+      Tags: 
+        - Key: Name 
+          Value: MyVpcSub1
+  MyVpcSub2:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1b"
+      VpcId: !Ref MyVpc
+      CidrBlock: '10.0.2.0/24'
+      Tags: 
+        - Key: Name 
+          Value: MyVpcSub2
+  MyVpcSub3:
+    Type: AWS::EC2::Subnet
+    Properties:
+      AvailabilityZone: "us-east-1c"
+      VpcId: !Ref MyVpc
+      CidrBlock: '10.0.3.0/24'
+      Tags: 
+        - Key: Name 
+          Value: MyVpcSub3
+Outputs:
+  VPCId:
+    Description: VPC ID
+    Value: !Ref MyVpc
+
+  PublicSubnet1Id:
+    Description: Public Subnet 1 ID
+    Value: !Ref MyVpcSub1
+
+  PublicSubnet2Id:
+    Description: Public Subnet 2 ID
+    Value: !Ref MyVpcSub2
+
+  PublicSubnet3Id:
+    Description: Public Subnet 3 ID
+    Value: !Ref MyVpcSub3
