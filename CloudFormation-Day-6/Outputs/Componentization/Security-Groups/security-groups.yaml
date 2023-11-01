@@ -1,0 +1,86 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: This template provision the Wenserver and Database Security Group.
+Metadata: {}
+
+Parameters:
+  DevWebserverSGGN:
+    Description: Please provide your Dev Webser Group Name
+    Type: String
+    Default: DevWebserverSGGN
+
+  DevWebserverSGGD:
+    Description: Please provide your Dev Webser Group Description
+    Type: String
+    Default: Enabling SSH and HTTP
+  
+  DevDBserverSGGN:
+    Description: Please provide your Dev database Group Name
+    Type: String
+    Default: DevWebserverSGGN
+
+  DevDBserverSGGD:
+    Description: Please provide your Dev database Group Description
+    Type: String
+    Default: Enabling MySqL
+
+Mappings: {}
+
+Conditions: {}
+
+Resources: 
+# Webserver security group
+  DevWebserverSG: 
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupName: !Ref DevWebserverSGGN
+      GroupDescription: !Ref DevWebserverSGGD
+      VpcId: !ImportValue DevVPCID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: DevWebserverSG
+
+  # Database Security group
+    DevDBserverSG: 
+      Type: AWS::EC2::SecurityGroup
+      Properties:
+      GroupName: !Ref DevDBserverSGGN
+      GroupDescription: !Ref DevDBserverSGGD
+      VpcId: !ImportValue DevVPCID
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: tcp
+          FromPort: 3306
+          ToPort: 3306
+          CidrIp: 0.0.0.0/0
+      Tags:
+        - Key: Name
+          Value: DevDBserverSG
+
+Outputs:
+  DevWebserverSGIDExportOutput:
+    Description: Exporting DevWeb Server SG id
+    Value: !Ref DevWebserverSG
+    Export: 
+      Name: DevWebserverSGID
