@@ -6,7 +6,7 @@ Parameters:
   DevWebserverKeyName:
     Description: Please select a keypair
     Type: AWS::EC2::KeyPair::KeyName
-    Default: virginia-keypair
+    Default: maven-key
 
 Mappings: 
   DevWebServerGoldenAMI:              #mapname logical name

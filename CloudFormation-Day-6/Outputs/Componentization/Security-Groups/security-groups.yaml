@@ -1,39 +1,36 @@
 AWSTemplateFormatVersion: 2010-09-09
-Description: This template provision the Wenserver and Database Security Group.
+Description: This template provision webservers and database security group
 Metadata: {}
 
-Parameters:
-  DevWebserverSGGN:
-    Description: Please provide your Dev Webser Group Name
+Parameters: 
+  DevWebserverSGGroupName:
+    Description: Please provide your Dev webserver group name
     Type: String
-    Default: DevWebserverSGGN
+    Default: DevWebserverSG
+  DevWebserverGroupDesc:
+    Description: Please provide your webserver parameter group description
+    Type: String
+    Default: enabling SSH and HTTP
 
-  DevWebserverSGGD:
-    Description: Please provide your Dev Webser Group Description
+  DevDBSGGroupName:
+    Description: Please provide your Dev wDB group name
     Type: String
-    Default: Enabling SSH and HTTP
-  
-  DevDBserverSGGN:
-    Description: Please provide your Dev database Group Name
+    Default: DevDBSG
+  DevDBGroupDesc:
+    Description: Please provide your DB parameter group description
     Type: String
-    Default: DevWebserverSGGN
-
-  DevDBserverSGGD:
-    Description: Please provide your Dev database Group Description
-    Type: String
-    Default: Enabling MySqL
-
+    Default: enabling MySQL
 Mappings: {}
 
 Conditions: {}
 
 Resources: 
-# Webserver security group
-  DevWebserverSG: 
+# Webserver Security group
+  DevWebserverSG:
     Type: AWS::EC2::SecurityGroup
     Properties:
-      GroupName: !Ref DevWebserverSGGN
-      GroupDescription: !Ref DevWebserverSGGD
+      GroupName: !Ref DevWebserverSGGroupName
+      GroupDescription: !Ref DevWebserverGroupDesc
       VpcId: !ImportValue DevVPCID
       SecurityGroupIngress:
         - IpProtocol: tcp
@@ -48,39 +45,35 @@ Resources:
         - IpProtocol: tcp
           FromPort: 80
           ToPort: 80
-          CidrIp: 0.0.0.0/0
-        - IpProtocol: tcp
-          FromPort: 22
-          ToPort: 22
           CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
           Value: DevWebserverSG
 
-  # Database Security group
-    DevDBserverSG: 
+# Database Security Group
+  DevDBSG:
       Type: AWS::EC2::SecurityGroup
       Properties:
-      GroupName: !Ref DevDBserverSGGN
-      GroupDescription: !Ref DevDBserverSGGD
-      VpcId: !ImportValue DevVPCID
-      SecurityGroupIngress:
-        - IpProtocol: tcp
-          FromPort: 3306
-          ToPort: 3306
-          CidrIp: 0.0.0.0/0
-      SecurityGroupEgress:
-        - IpProtocol: tcp
-          FromPort: 3306
-          ToPort: 3306
-          CidrIp: 0.0.0.0/0
-      Tags:
-        - Key: Name
-          Value: DevDBserverSG
+        GroupName: !Ref DevDBSGGroupName
+        GroupDescription: !Ref DevDBGroupDesc
+        VpcId: !ImportValue DevVPCID
+        SecurityGroupIngress:
+          - IpProtocol: tcp
+            FromPort: 3306
+            ToPort: 3306
+            CidrIp: 0.0.0.0/0
+        SecurityGroupEgress:
+          - IpProtocol: tcp
+            FromPort: 3306
+            ToPort: 3306
+            CidrIp: 0.0.0.0/0
+        Tags:
+          - Key: Name
+            Value: DevDBSG
 
 Outputs:
   DevWebserverSGIDExportOutput:
-    Description: Exporting DevWeb Server SG id
+    Description: Exporting the dev SG ID
     Value: !Ref DevWebserverSG
     Export: 
       Name: DevWebserverSGID
